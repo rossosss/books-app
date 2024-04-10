@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import Navbar from './Navbar';
+import Book from './Book';
+
 
 const Books = (props) => {
-  console.log(props)
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
+    console.log(props)
     const fetchAllBooks = async () => {
       try {
         const res = await axios.get("http://localhost:8800/books");
@@ -32,8 +35,8 @@ const Books = (props) => {
     }
   };
 
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
+  const handleSearch = (term) => {
+    setSearchTerm(term);
   };
 
   const filteredBooks = books.filter(book =>
@@ -41,14 +44,9 @@ const Books = (props) => {
   );
 
   return (
-    <div>
+    <>
+      <Navbar onSearch={handleSearch}/>
       <h1>Книги</h1>
-      <input
-        type="text"
-        placeholder="Поиск по названию"
-        value={searchTerm}
-        onChange={handleSearch}
-      />
       <div className="books">
         {filteredBooks.map(book => (
           <div className="book" key={book.id}>
@@ -62,7 +60,7 @@ const Books = (props) => {
         ))}
       </div>
       <button><Link to="/add">Добавить новую книгу</Link></button>
-    </div>
+    </>
   );
 };
 
