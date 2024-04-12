@@ -23,6 +23,3 @@ function App() {
 }
 
 export default App;
-
-
-// Проверить почему вызывается дважды

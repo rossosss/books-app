@@ -2,10 +2,8 @@ import React from 'react'
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
-import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
 
@@ -52,7 +50,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const Navbar = ({ onSearch }) => {
+const Navbar = ({ onSearch, showSearch }) => {
   const handleSearchChange = (e) => {
     onSearch(e.target.value);
   }
@@ -68,6 +66,7 @@ const Navbar = ({ onSearch }) => {
           >
             Книги
           </Typography>
+          {showSearch && (
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -78,6 +77,7 @@ const Navbar = ({ onSearch }) => {
               onChange={handleSearchChange}
             />
           </Search>
+          )}
         </Toolbar>
       </AppBar>
     </Box>

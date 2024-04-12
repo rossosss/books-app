@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
 import Book from './Book';
+import { Box, Button, Container, Grid } from '@material-ui/core/node';
 
 
 const Books = (props) => {
@@ -10,7 +11,6 @@ const Books = (props) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    console.log(props)
     const fetchAllBooks = async () => {
       try {
         const res = await axios.get("http://localhost:8800/books");
@@ -45,21 +45,20 @@ const Books = (props) => {
 
   return (
     <>
-      <Navbar onSearch={handleSearch}/>
-      <h1>Книги</h1>
-      <div className="books">
-        {filteredBooks.map(book => (
-          <div className="book" key={book.id}>
-            <img src={`../uploads/${book.cover}`} alt="" />
-            <h2>{book.title}</h2>
-            <p>{book.desc}</p>
-            <span>{book.price}</span>
-            <button className='delete' onClick={() => handleDelete(book.id)}>Удалить</button>
-            <button className='update'><Link to={`/update/${book.id}`}>Изменить</Link></button>
-          </div>
-        ))}
-      </div>
-      <button><Link to="/add">Добавить новую книгу</Link></button>
+      <Navbar onSearch={handleSearch} showSearch={true}/>
+
+      <Container>
+        <Grid container spacing={2}>
+          {filteredBooks.map(book => (
+            <Grid item key={book.id} xs={12} sm={6} md={4} lg={3}> {/* Используем Grid для распределения */}
+              <Book book={book} handleDelete={handleDelete} /> {/* Используем компонент Book */}
+            </Grid>
+          ))}
+        </Grid>
+        <Box display="flex" justifyContent="center" mt={10}> {/* Используем Box для выравнивания кнопки по центру */}
+          <Button component={Link} to="/add" variant="contained" color="primary" style={{ marginTop: '15px' }}>Добавить новую книгу</Button>
+        </Box>
+      </Container>
     </>
   );
 };
