@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Button, Container, TextField, Typography } from '@material-ui/core/node';
+import Navbar from './Navbar';
 
 const Test = ({ action }) => {
   const [book, setBook] = useState({
@@ -48,14 +50,64 @@ const Test = ({ action }) => {
   }
 
   return (
-    <div className='form'>
-      <h1>{action === "add" ? "Добавить книгу" : "Изменить информацию о книге"}</h1>
-      <input type="text" placeholder='Название' onChange={handleChange} name='title' />
-      <input type="text" placeholder='Описание' onChange={handleChange} name='desc' />
-      <input type="number" placeholder='Цена' onChange={handleChange} name='price' />
-      <input type="file" onChange={handleFile} name='cover' />
-      <button className='formButton' onClick={handleClick}>{action === "add" ? "Добавить" : "Изменить"}</button>
-    </div>
+    <>
+    <Navbar showSearch={false}/>
+    <Container maxWidth = "md">
+      <Typography variant="h4" gutterBottom mt="25px">
+        {action === "add" ? "Добавить книгу" : "Изменить информацию о книге"}
+      </Typography>
+      <form onSubmit={handleClick}>
+      <TextField
+          label="Название"
+          placeholder="Название"
+          fullWidth
+          margin="normal"
+          name="title"
+          value={book.title}
+          onChange={handleChange}
+        />
+      <TextField
+          label="Описание"
+          placeholder="Описание"
+          fullWidth
+          margin="normal"
+          name="desc"
+          value={book.desc}
+          onChange={handleChange}
+        />
+      <TextField
+          label="Цена"
+          placeholder="Цена"
+          fullWidth
+          margin="normal"
+          name="price"
+          value={book.price}
+          onChange={handleChange}
+      />
+      <Container maxWidth="sm" style={{ display: 'flex', justifyContent: 'space-between', width: '100%'}}>
+      <Button
+        variant="contained"
+        component="label"
+      >
+        Загрузить обложку
+      <input
+        name="cover"
+        type="file"
+        hidden
+        onChange={handleFile}/>
+      </Button>
+      <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          style={{margin:"auto 0em"}}
+        >
+          {action === "add" ? "Добавить" : "Изменить"}
+        </Button>
+      </Container>
+      </form>
+    </Container>
+    </>
   )
 }
 
