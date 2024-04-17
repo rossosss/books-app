@@ -23,7 +23,7 @@ const Test = ({ action }) => {
   const handleFile = e => {
     setBook(prev => ({ ...prev, cover: e.target.files[0] }))
   };
-
+  // useRef, useMemo, useCallback, стили, жизненный цикл компонента + mobx statetree, makeStyle(materialUI)
   const handleClick = async e => {
     e.preventDefault();
     try {

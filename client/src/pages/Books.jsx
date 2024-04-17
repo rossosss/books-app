@@ -9,6 +9,8 @@ import { Box, Button, Container, Grid } from '@material-ui/core/node';
 const Books = (props) => {
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
 
   useEffect(() => {
     const fetchAllBooks = async () => {
@@ -50,14 +52,16 @@ const Books = (props) => {
       <Container>
         <Grid container spacing={2}>
           {filteredBooks.map(book => (
-            <Grid item key={book.id} xs={12} sm={6} md={4} lg={3}> {/* Используем Grid для распределения */}
-              <Book book={book} handleDelete={handleDelete} /> {/* Используем компонент Book */}
+            <Grid item key={book.id} xs={12} sm={6} md={4} lg={3}>
+              <Book book={book} handleDelete={handleDelete} />
             </Grid>
           ))}
         </Grid>
-        <Box display="flex" justifyContent="center" mt={10}> {/* Используем Box для выравнивания кнопки по центру */}
+        {isAuthenticated && (
+        <Box display="flex" justifyContent="center" mt={10}>
           <Button component={Link} to="/add" variant="contained" color="primary" style={{ marginTop: '15px' }}>Добавить новую книгу</Button>
         </Box>
+        )}
       </Container>
     </>
   );

@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom';
 import React from 'react';
 
 const Book = ({ book, handleDelete }) => {
+
+  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+
   return (
     <Card sx={{ maxWidth: 200, mt: "30px" }} key={book.id}>
       <CardMedia 
@@ -23,10 +26,12 @@ const Book = ({ book, handleDelete }) => {
           Цена: {book.price}
         </Typography>
       </CardContent>
+      {isAuthenticated && (
       <CardActions>
         <Button size="small" onClick={() => handleDelete(book.id)}>Удалить</Button>
         <Button component={Link} to={`/update/${book.id}`} color="primary">Изменить</Button>
       </CardActions>
+      )}
     </Card>
   );
 };

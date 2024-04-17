@@ -11,7 +11,7 @@ const Auth = ({ type }) => {
 
   const navigate = useNavigate();
   const [error, setError] = useState('');
-  const [setUser] = useState(null);
+  const [user, setUser] = useState(null);
 
   const handleChange = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,8 +19,8 @@ const Auth = ({ type }) => {
   };
 
   const login = (userData) => {
-    // Сохраняем информацию о пользователе в localStorage
     localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('isAuthenticated', 'true');
     setUser(userData);
   };
 
@@ -31,9 +31,9 @@ const Auth = ({ type }) => {
         // Обработка логина
         const res = await axios.post('http://localhost:8800/login', formData);
         const userData = res.data.user;
-        localStorage.setItem('user', JSON.stringify(userData)); // Сохраняем данные пользователя в localStorage
+        localStorage.setItem('user', JSON.stringify(userData));
         login(userData);
-        console.log(res.data); // Возвращенные данные о пользователе после успешного входа
+        console.log(res.data);
       } else if (type === 'register') {
         const res = await axios.post('http://localhost:8800/register', formData);
         console.log(res.data);

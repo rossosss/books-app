@@ -7,6 +7,7 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
 import { Button, Link } from '@material-ui/core/node';
+import { useNavigate } from 'react-router-dom';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -51,6 +52,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const Navbar = ({ onSearch, showSearch }) => {
   const [user, setUser] = useState(null);
+  
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem('user');
@@ -61,7 +64,9 @@ const Navbar = ({ onSearch, showSearch }) => {
 
   const logout = () => {
     localStorage.removeItem('user');
+    localStorage.removeItem('isAuthenticated');
     setUser(null);
+    navigate('/login');
   };
 
   const handleSearchChange = (e) => {
@@ -86,7 +91,7 @@ const Navbar = ({ onSearch, showSearch }) => {
                 <SearchIcon />
               </SearchIconWrapper>
               <StyledInputBase
-                placeholder="Search…"
+                placeholder="Поиск..."
                 inputProps={{ 'aria-label': 'search' }}
                 onChange={handleSearchChange}
               />
