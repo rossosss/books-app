@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Button, Container, Grid, TextField, Typography } from '@material-ui/core/node';
@@ -13,10 +13,10 @@ const Auth = ({ type }) => {
   const [error, setError] = useState('');
   const [user, setUser] = useState(null);
 
-  const handleChange = e => {
+  const handleChange = useCallback ((e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError('');
-  };
+  }, [formData]);
 
   const login = (userData) => {
     localStorage.setItem('user', JSON.stringify(userData));
@@ -24,7 +24,7 @@ const Auth = ({ type }) => {
     setUser(userData);
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     try {
       if (type === 'login') {
@@ -43,7 +43,7 @@ const Auth = ({ type }) => {
       console.error(err);
       setError(err.response.data.error || "Неверный логин и/или пароль");
     }
-  };
+  }, [type, formData, navigate]);
 
   return (
     <>

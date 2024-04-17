@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
@@ -9,11 +9,12 @@ import { Box, Button, Container, Grid } from '@material-ui/core/node';
 const Books = (props) => {
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
   const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+  // UseRef
+  const fetchAllBooksRef = useRef();
 
   useEffect(() => {
-    const fetchAllBooks = async () => {
+    fetchAllBooksRef.current = async () => {
       try {
         const res = await axios.get("http://localhost:8800/books");
         setBooks(res.data);
@@ -21,13 +22,12 @@ const Books = (props) => {
         console.log(err);
       }
     };
-    fetchAllBooks();
+    fetchAllBooksRef.current();
   }, []);
-
-  const handleDelete = async (id) => {
+  const handleDelete = useCallback(async (id) => {
     try {
       await axios.delete(`http://localhost:8800/books/${id}`);
-      window.location.reload();
+      setBooks(prevBooks => prevBooks.filter(book => book.id !== id));
     } catch (err) {
       if (err.response.status === 404) {
         console.log('OST 404');
@@ -35,16 +35,18 @@ const Books = (props) => {
         console.log(err);
       }
     }
-  };
+  }, []);
 
-  const handleSearch = (term) => {
+  const handleSearch = useCallback((term) => {
     setSearchTerm(term);
-  };
+  }, []);
 
-  const filteredBooks = books.filter(book =>
+  // Мемоизация списка книг
+  const filteredBooks = useMemo(() => {
+    return books.filter(book =>
     book.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+    );
+  }, [books, searchTerm]);
   return (
     <>
       <Navbar onSearch={handleSearch} showSearch={true}/>
