@@ -24,6 +24,7 @@ const Books = (props) => {
     };
     fetchAllBooksRef.current();
   }, []);
+
   const handleDelete = useCallback(async (id) => {
     try {
       await axios.delete(`http://localhost:8800/books/${id}`);
