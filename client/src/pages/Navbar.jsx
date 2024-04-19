@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -6,7 +6,8 @@ import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
-
+import { Button, Link } from '@material-ui/core/node';
+import { useNavigate } from 'react-router-dom';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -38,7 +39,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   width: '100%',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     [theme.breakpoints.up('sm')]: {
@@ -51,9 +51,28 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const Navbar = ({ onSearch, showSearch }) => {
+  const [user, setUser] = useState(null);
+  
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem('user');
+    if (loggedInUser) {
+      setUser(JSON.parse(loggedInUser));
+    }
+  }, []);
+
+  const logout = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('isAuthenticated');
+    setUser(null);
+    navigate('/login');
+  };
+
   const handleSearchChange = (e) => {
     onSearch(e.target.value);
-  }
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -67,21 +86,41 @@ const Navbar = ({ onSearch, showSearch }) => {
             Книги
           </Typography>
           {showSearch && (
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-              onChange={handleSearchChange}
-            />
-          </Search>
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Поиск..."
+                inputProps={{ 'aria-label': 'search' }}
+                onChange={handleSearchChange}
+              />
+            </Search>
+          )}
+          <Box sx={{ flexGrow: 1 }} />
+          {user ? (
+            <>
+              <Typography variant="body1" sx={{ marginRight: '30px' }}>
+                {user.login}
+              </Typography>
+              <Button variant="contained" onClick={logout} sx={{ bgcolor: 'red' }}>
+                Выйти
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link href="/login" color="inherit" underline="none" sx={{ marginRight: '20px' }}>
+                Войти
+              </Link>
+              <Link href="/register" color="inherit" underline="none" sx={{ marginRight: '10px' }}>
+                Регистрация
+              </Link>
+            </>
           )}
         </Toolbar>
       </AppBar>
     </Box>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

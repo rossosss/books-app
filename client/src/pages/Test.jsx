@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Button, Container, TextField, Typography } from '@material-ui/core/node';
@@ -16,38 +16,37 @@ const Test = ({ action }) => {
   const location = useLocation();
   const bookId = location.pathname.split("/")[2];
 
-  const handleChange = e => {
+
+  // Callback
+  const handleChange = useCallback((e) => {
     setBook(prev => ({ ...prev, [e.target.name]: e.target.value }))
-  };
+  }, []);
 
-  const handleFile = e => {
+  const handleFile = useCallback((e) => {
     setBook(prev => ({ ...prev, cover: e.target.files[0] }))
-  };
-
-  const handleClick = async e => {
+  }, []);
+  const handleClick = useCallback(async (e) => {
     e.preventDefault();
     try {
+      const formData = new FormData()
+      formData.append('title', book.title)
+      formData.append('desc', book.desc)
+      formData.append('price', book.price)        
+      formData.append('cover', book.cover)
       if (action === "add") {
-        const formData = new FormData()
-        formData.append('title', book.title)
-        formData.append('desc', book.desc)
-        formData.append('price', book.price)
-        formData.append('cover', book.cover)
         await axios.post("http://localhost:8800/books", formData, {headers: {'Content-Type': 'multipart/form-data'}})
-        } else if (action === "update") {
-          const formData = new FormData()
-          formData.append('title', book.title)
-          formData.append('desc', book.desc)
-          formData.append('price', book.price)
-          formData.append('cover', book.cover)
-          await axios.put(`http://localhost:8800/books/${bookId}`, formData, {headers: {'Content-Type': 'multipart/form-data'}})
-        }
+      } else if (action === "update") {
+        await axios.put(`http://localhost:8800/books/${bookId}`, formData, {headers: {'Content-Type': 'multipart/form-data'}})
+      }
       // Навигация на главную страницу
       navigate("/")
     } catch (err) {
       console.log(err);
     }
-  }
+  }, [action, book, bookId, navigate]);
+
+  // Memoизация книги
+  const memoizedBook = useMemo(() => book, [book]);
 
   return (
     <>
@@ -63,7 +62,7 @@ const Test = ({ action }) => {
           fullWidth
           margin="normal"
           name="title"
-          value={book.title}
+          value={memoizedBook.title}
           onChange={handleChange}
         />
       <TextField
@@ -72,7 +71,7 @@ const Test = ({ action }) => {
           fullWidth
           margin="normal"
           name="desc"
-          value={book.desc}
+          value={memoizedBook.desc}
           onChange={handleChange}
         />
       <TextField
@@ -81,7 +80,7 @@ const Test = ({ action }) => {
           fullWidth
           margin="normal"
           name="price"
-          value={book.price}
+          value={memoizedBook.price}
           onChange={handleChange}
       />
       <Container maxWidth="sm" style={{ display: 'flex', justifyContent: 'space-between', width: '100%'}}>
@@ -112,3 +111,5 @@ const Test = ({ action }) => {
 }
 
 export default Test;
+
+// useRef, useMemo, useCallback, стили, жизненный цикл компонента + mobx statetree, makeStyle(materialUI)
